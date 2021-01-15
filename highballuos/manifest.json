@@ -1,0 +1,35 @@
+{
+    "name": "highballuos",
+    "version": "1.0",
+    "description": "Get Input's value When focus change!",
+    "permissions": ["activeTab", "declarativeContent", "storage"],
+    "options_page": "src/option/options.html",
+    "background": {
+      "scripts": ["src/background/bgd.js"],
+      "persistent": false
+    },
+    "content_scripts": [
+      {
+        "matches"  : ["https://developer.chrome.com/*"],
+        "js" : ["src/injection/contentscript.js"]
+      }
+    ],
+    "web_accessible_resources": ["src/injection/focus.js"],
+    "page_action": {
+      "default_popup": "src/popup/popup.html",
+      "default_icon": {
+        "16": "images/evil16.png",
+        "32": "images/evil32.png",
+        "48": "images/evil48.png",
+        "128": "images/evil128.png"
+      }
+    },
+    "icons": {
+      "16": "images/evil16.png",
+      "32": "images/evil32.png",
+      "48": "images/evil48.png",
+      "128": "images/evil128.png"
+    },
+    "manifest_version": 2
+  }
+  
