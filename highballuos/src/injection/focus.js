@@ -13,10 +13,13 @@ const INPUT_TAG = "INPUT";
 const TEXTAREA_TAG = "TEXTAREA";
 const DIV_TAG = "DIV";
 
+let loadingImage = "https://visualpharm.com/assets/512/Evil-595b40b65ba036ed117d403d.svg";
+
 let currentFocusedElement;
+let highballuosContainer;
 let highballuosBtn;
 
-const isInput = (element) => {
+const isTextElement = (element) => {
     switch(element.tagName) {
         case INPUT_TAG :
 
@@ -31,25 +34,43 @@ const isInput = (element) => {
     }
 }
 
+// without px notation.. ignored
+const copyLayout = (targetElement, newElement) => { 
+    newElement.style.width = targetElement.offsetWidth + "px";
+    newElement.style.height = targetElement.offsetHeight + "px";
+    
+    newElement.style.left = targetElement.offsetLeft + "px";;
+    newElement.style.top = targetElement.offsetTop + "px";
+    console.log(targetElement.offsetTop);
+    console.log(newElement.style.top);
+}
+
 const onFocusIn = (event) => {
     event.stopPropagation();
 
-    if(isInput(event.path[0])){
+    if(isTextElement(event.path[0]) && currentFocusedElement != event.path[0]){
+        if(currentFocusedElement) {
+            removePrev(currentFocusedElement);
+        }
+
         currentFocusedElement = event.path[0];
-        console.log(currentFocusedElement);
+
+        highballuosContainer = document.createElement("div");
+        highballuosContainer.className = "highballuos-container";
+        copyLayout(event.path[0], highballuosContainer);
+        
         highballuosBtn = document.createElement("div");
-        highballuosBtn.className = "rel-right-bottom";
-        currentFocusedElement.parentElement.appendChild(highballuosBtn);
+        highballuosBtn.className = "highballuos-btn";
+        highballuosBtn.style.backgroundImage = `url(${loadingImage})`;
+
+        highballuosContainer.appendChild(highballuosBtn);
+
+        currentFocusedElement.parentElement.appendChild(highballuosContainer);
     }
 };
 
-const onFocusOut = (event) => {
-    event.stopPropagation();
-    if(isInput(event.path[0])){
-        currentFocusedElement = event.path[0];
-        console.log(currentFocusedElement);
-        currentFocusedElement.parentElement.removeChild(highballuosBtn);
-    }
+const removePrev = (target) => {
+    target.parentElement.removeChild(highballuosContainer);
 };
 
 window.onload = () => {
@@ -58,17 +79,9 @@ window.onload = () => {
         once : false,
         passive : true
     });
-    
-    document.body.addEventListener("focusout", onFocusOut, {
-        capture : false,
-        once : false,
-        passive : true
-    });
 };
 
 window.onunload = () => {
     document.body.removeEventListener("focusin", onFocusIn);
-    
-    document.body.addEventListener("focusout", onFocusOut);
 }
 
