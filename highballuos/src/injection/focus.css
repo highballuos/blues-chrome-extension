@@ -1,0 +1,9 @@
+.rel-right-bottom{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: -10px;
+    top: -10px;
+    z-index: 9999;
+    background-color: red;
+}

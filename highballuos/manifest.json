@@ -10,11 +10,14 @@
     },
     "content_scripts": [
       {
-        "matches"  : ["https://developer.chrome.com/*"],
-        "js" : ["src/injection/contentscript.js"]
+        "matches"  : ["https://*/*"],
+        "js" : ["src/injection/contentscript.js"],
+        "css" : ["src/injection/focus.css"]
       }
     ],
-    "web_accessible_resources": ["src/injection/focus.js"],
+    "web_accessible_resources": [
+      "src/injection/focus.js"
+    ],
     "page_action": {
       "default_popup": "src/popup/popup.html",
       "default_icon": {

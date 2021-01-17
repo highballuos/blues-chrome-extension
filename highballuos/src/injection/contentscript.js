@@ -1,6 +1,7 @@
-var injectionScript = document.createElement('script');
+var injectionScript = document.createElement("script");
 
-injectionScript.src = chrome.runtime.getURL('src/injection/focus.js');
+injectionScript.src = chrome.runtime.getURL("src/injection/focus.js");
+
 injectionScript.onload = function() {
     this.remove();
 };
