@@ -12,4 +12,9 @@
     bottom: 0px;
     z-index: 9999;
     pointer-events: all;
+    background-image: url("https://visualpharm.com/assets/512/Evil-595b40b65ba036ed117d403d.svg");
+}
+
+.highballuos-btn:hover{
+    background-image: url("https://visualpharm.com/assets/578/Question-595b40b85ba036ed117da8d4.svg");
 }

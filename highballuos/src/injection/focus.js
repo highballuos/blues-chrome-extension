@@ -13,8 +13,6 @@ const INPUT_TAG = "INPUT";
 const TEXTAREA_TAG = "TEXTAREA";
 const DIV_TAG = "DIV";
 
-let loadingImage = "https://visualpharm.com/assets/512/Evil-595b40b65ba036ed117d403d.svg";
-
 let currentFocusedElement;
 let highballuosContainer;
 let highballuosBtn;
@@ -34,7 +32,7 @@ window.onload = () => {
 
 window.onunload = () => {
     if(currentFocusedElement){
-        eventListenerHelper(currentFocusedElement, eventTypes, onValueChange, false);
+        eventListenerHelper(currentFocusedElement, eventTypes, onTextChange, false);
     }
     document.body.removeEventListener("focusin", onFocusIn);
 }
@@ -55,7 +53,7 @@ const onFocusIn = (event) => {
 
 // add events and elements to new target
 const addNew = (target) => {
-    eventListenerHelper(target, eventTypes, onValueChange, true);
+    eventListenerHelper(target, eventTypes, onTextChange, true);
 
     highballuosContainer = document.createElement("div");
     highballuosContainer.className = "highballuos-container";
@@ -63,7 +61,7 @@ const addNew = (target) => {
     
     highballuosBtn = document.createElement("div");
     highballuosBtn.className = "highballuos-btn";
-    highballuosBtn.style.backgroundImage = `url(${loadingImage})`;
+    highballuosBtn.onclick = onClickHighballousBtn;
 
     highballuosContainer.appendChild(highballuosBtn);
 
@@ -72,7 +70,7 @@ const addNew = (target) => {
 
 // remove events and elements when target changed
 const removePrev = (target) => {
-    eventListenerHelper(target, eventTypes, onValueChange, false);
+    eventListenerHelper(target, eventTypes, onTextChange, false);
     target.parentElement.removeChild(highballuosContainer);
 };
 
@@ -123,12 +121,11 @@ const eventListenerHelper = (target, events, handler, isAdd = true) => {
             target.removeEventListener(events[i], handler);
         }
     }
-    
 }
 
 // input, change, keyup, paste events function
 // get target's text and assign to highballuosTxt
-const onValueChange = (event) => {
+const onTextChange = (event) => {
     if(event.target.tagName == DIV_TAG){
         highballuosTxt = event.target.innerText;
     } else {
@@ -137,9 +134,27 @@ const onValueChange = (event) => {
     console.log(highballuosTxt);
 }
 
+// onclick func of highballuosBtn
+// return transfered text to currentFocusedElement's value
+const onClickHighballousBtn = () => {
+    let reversedTxt = transferText(highballuosTxt);
 
+    changeText(reversedTxt);
 
+    highballuosTxt = reversedTxt;
+}
 
+const changeText = (txt) => {
+    if(currentFocusedElement.tagName == DIV_TAG){
+        currentFocusedElement.innerText = txt;
+    } else {
+        currentFocusedElement.value = txt;
+    }
+}
+
+const transferText = (txt) => {
+    return txt.split("").reverse().join("");
+}
 
 
 
