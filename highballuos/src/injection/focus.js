@@ -17,7 +17,6 @@ let currentFocusedElement;
 let highballuosContainer;
 let highballuosBtn;
 
-let highballuosTxt;
 const eventTypes = ["input"];
 
 
@@ -124,24 +123,28 @@ const eventListenerHelper = (target, events, handler, isAdd = true) => {
 }
 
 // input, change, keyup, paste events function
-// get target's text and assign to highballuosTxt
 const onTextChange = (event) => {
     if(event.target.tagName == DIV_TAG){
-        highballuosTxt = event.target.innerText;
+        console.log(event.target.innerText);
     } else {
-        highballuosTxt = event.target.value;
+        console.log(event.target.value);
     }
-    console.log(highballuosTxt);
 }
 
 // onclick func of highballuosBtn
 // return transfered text to currentFocusedElement's value
 const onClickHighballousBtn = () => {
-    let reversedTxt = transferText(highballuosTxt);
+    let reversedTxt = transferText(getText());
 
     changeText(reversedTxt);
+}
 
-    highballuosTxt = reversedTxt;
+const getText = () => {
+    if(currentFocusedElement.tagName == DIV_TAG){
+        return currentFocusedElement.innerText
+    } else {
+        return currentFocusedElement.value;
+    }
 }
 
 const changeText = (txt) => {
