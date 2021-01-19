@@ -19,6 +19,64 @@ let currentFocusedElement;
 let highballuosContainer;
 let highballuosBtn;
 
+let highballuosTxt;
+const eventTypes = ["input"];
+
+
+// window load unload event listeners -> use to catch focusing event
+window.onload = () => {
+    document.body.addEventListener("focusin", onFocusIn, {
+        capture : false,
+        once : false,
+        passive : true
+    });
+};
+
+window.onunload = () => {
+    if(currentFocusedElement){
+        eventListenerHelper(currentFocusedElement, eventTypes, onValueChange, false);
+    }
+    document.body.removeEventListener("focusin", onFocusIn);
+}
+
+// focusin event function
+const onFocusIn = (event) => {
+    event.stopPropagation();
+
+    if(isTextElement(event.path[0]) && currentFocusedElement != event.path[0]){
+        if(currentFocusedElement) {
+            removePrev(currentFocusedElement);
+        }
+
+        currentFocusedElement = event.path[0];
+        addNew(currentFocusedElement);
+    }
+};
+
+// add events and elements to new target
+const addNew = (target) => {
+    eventListenerHelper(target, eventTypes, onValueChange, true);
+
+    highballuosContainer = document.createElement("div");
+    highballuosContainer.className = "highballuos-container";
+    copyLayout(target, highballuosContainer);
+    
+    highballuosBtn = document.createElement("div");
+    highballuosBtn.className = "highballuos-btn";
+    highballuosBtn.style.backgroundImage = `url(${loadingImage})`;
+
+    highballuosContainer.appendChild(highballuosBtn);
+
+    target.parentElement.appendChild(highballuosContainer);
+}
+
+// remove events and elements when target changed
+const removePrev = (target) => {
+    eventListenerHelper(target, eventTypes, onValueChange, false);
+    target.parentElement.removeChild(highballuosContainer);
+};
+
+// our target is only type of [div, input, textarea]
 const isTextElement = (element) => {
     switch(element.tagName) {
         case INPUT_TAG :
@@ -34,54 +92,58 @@ const isTextElement = (element) => {
     }
 }
 
+// copy target's layout and paste to our container
 // without px notation.. ignored
 const copyLayout = (targetElement, newElement) => { 
     newElement.style.width = targetElement.offsetWidth + "px";
     newElement.style.height = targetElement.offsetHeight + "px";
     
-    newElement.style.left = targetElement.offsetLeft + "px";;
+    newElement.style.left = targetElement.offsetLeft + "px";
     newElement.style.top = targetElement.offsetTop + "px";
-    console.log(targetElement.offsetTop);
-    console.log(newElement.style.top);
 }
 
-const onFocusIn = (event) => {
-    event.stopPropagation();
-
-    if(isTextElement(event.path[0]) && currentFocusedElement != event.path[0]){
-        if(currentFocusedElement) {
-            removePrev(currentFocusedElement);
-        }
-
-        currentFocusedElement = event.path[0];
-
-        highballuosContainer = document.createElement("div");
-        highballuosContainer.className = "highballuos-container";
-        copyLayout(event.path[0], highballuosContainer);
-        
-        highballuosBtn = document.createElement("div");
-        highballuosBtn.className = "highballuos-btn";
-        highballuosBtn.style.backgroundImage = `url(${loadingImage})`;
-
-        highballuosContainer.appendChild(highballuosBtn);
-
-        currentFocusedElement.parentElement.appendChild(highballuosContainer);
+// event listener helper
+// add multiple listener to one target
+// judge add or remove by isAdd
+const eventListenerHelper = (target, events, handler, isAdd = true) => {
+    if(!(events instanceof Array)){
+        throw "Error in addEventListenerHelper : events is not array";
     }
-};
 
-const removePrev = (target) => {
-    target.parentElement.removeChild(highballuosContainer);
-};
-
-window.onload = () => {
-    document.body.addEventListener("focusin", onFocusIn, {
-        capture : false,
-        once : false,
-        passive : true
-    });
-};
-
-window.onunload = () => {
-    document.body.removeEventListener("focusin", onFocusIn);
+    if(isAdd){
+        for(let i=0; i<events.length; i++){
+            target.addEventListener(events[i], handler, {
+                capture : false,
+                once : false,
+                passive : true
+            });
+        }
+    } else {
+        for(let i=0; i<events.length; i++){
+            target.removeEventListener(events[i], handler);
+        }
+    }
+    
 }
+
+// input, change, keyup, paste events function
+// get target's text and assign to highballuosTxt
+const onValueChange = (event) => {
+    if(event.target.tagName == DIV_TAG){
+        highballuosTxt = event.target.innerText;
+    } else {
+        highballuosTxt = event.target.value;
+    }
+    console.log(highballuosTxt);
+}
+
+
+
+
+
+
+
+
+
+
 
