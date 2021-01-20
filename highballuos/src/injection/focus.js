@@ -9,13 +9,15 @@ Page가 load 될 때 이벤트를 등록하고 unload 될 때 이벤트를 제�
 
 'use strict';
 
-const INPUT_TAG = "INPUT";
 const TEXTAREA_TAG = "TEXTAREA";
 const DIV_TAG = "DIV";
+const HATE_SPEECH_DETECT_API = "https://main-multilingual-bert-korean-hate-speech-jeongukjae.endpoint.ainize.ai/v1/models/model:predict";
 
 let currentFocusedElement;
 let highballuosContainer;
 let highballuosBtn;
+let highballuosTimer;
+let highballuosText
 
 const eventTypes = ["input"];
 
@@ -46,12 +48,12 @@ const onFocusIn = (event) => {
         }
 
         currentFocusedElement = event.path[0];
-        addNew(currentFocusedElement);
+        appendNew(currentFocusedElement);
     }
 };
 
 // add events and elements to new target
-const addNew = (target) => {
+const appendNew = (target) => {
     eventListenerHelper(target, eventTypes, onTextChange, true);
 
     highballuosContainer = document.createElement("div");
@@ -76,8 +78,6 @@ const removePrev = (target) => {
 // our target is only type of [div, input, textarea]
 const isTextElement = (element) => {
     switch(element.tagName) {
-        case INPUT_TAG :
-
         case TEXTAREA_TAG :
             return true;
 
@@ -122,46 +122,70 @@ const eventListenerHelper = (target, events, handler, isAdd = true) => {
     }
 }
 
-// input, change, keyup, paste events function
+// input events function - other options[paste, change, keyup]
+// request with debounce
 const onTextChange = (event) => {
-    if(event.target.tagName == DIV_TAG){
-        console.log(event.target.innerText);
-    } else {
-        console.log(event.target.value);
+    if(highballuosTimer){
+        clearTimeout(highballuosTimer);
     }
+    highballuosTimer = setTimeout(detectHateSpeech, 700, event.target);
 }
+
+// request to hate speech detection api
+const detectHateSpeech = (target) => {
+    let txt = "";
+    if(target.tagName == DIV_TAG){
+        txt = target.innerText;
+    } else {
+        txt = target.value;
+    }
+
+    let postBody = {
+        instances: [
+            {
+                "context": "",
+                "comment": txt
+            }
+        ]
+    }
+
+    fetch(HATE_SPEECH_DETECT_API, {
+        method : "POST",
+        body : JSON.stringify(postBody),
+        headers : {"content-type" : "application/json"}
+    })
+    .then(res => res.json())
+    .then(resJson => console.log(resJson.predictions))
+    .catch(err => console.log(err));
+}
+
+
+/*
+TODO: 매번 나눌 것인가? 아니면 한번에 나눠서 다른 함수를 호출할 것인가 정하자
+*/
+
 
 // onclick func of highballuosBtn
 // return transfered text to currentFocusedElement's value
 const onClickHighballousBtn = () => {
-    let reversedTxt = transferText(getText());
-
-    changeText(reversedTxt);
-}
-
-const getText = () => {
+    let reversedTxt = "";
     if(currentFocusedElement.tagName == DIV_TAG){
-        return currentFocusedElement.innerText
+        reversedTxt = transferText(currentFocusedElement.innerText);
+        currentFocusedElement.innerText = reversedTxt;
     } else {
-        return currentFocusedElement.value;
+        reversedTxt = transferText(currentFocusedElement.value);
+        currentFocusedElement.value = reversedTxt;
     }
 }
 
-const changeText = (txt) => {
-    if(currentFocusedElement.tagName == DIV_TAG){
-        currentFocusedElement.innerText = txt;
-    } else {
-        currentFocusedElement.value = txt;
-    }
+const changeTextareaText = (target, txt) => {
+    target.value = txt;
+}
+
+const changeDivText = (target, txt) => {
+    target.innerText = txt;
 }
 
 const transferText = (txt) => {
     return txt.split("").reverse().join("");
 }
-
-
-
-
-
-
-
