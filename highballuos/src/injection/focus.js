@@ -13,6 +13,12 @@ const TEXTAREA_TAG = "TEXTAREA";
 const DIV_TAG = "DIV";
 const HATE_SPEECH_DETECT_API = "https://main-multilingual-bert-korean-hate-speech-jeongukjae.endpoint.ainize.ai/v1/models/model:predict";
 
+const NORMAL_IMAGE = "url(https://visualpharm.com/assets/838/Cool-595b40b65ba036ed117d3e78.svg)";
+const OFFENSIVE_IMAGE = "url(https://visualpharm.com/assets/134/Angry-595b40b65ba036ed117d3b6c.svg)";
+const HATE_IMAGE = "url(https://visualpharm.com/assets/512/Evil-595b40b65ba036ed117d403d.svg)";
+const LOADING_IMAGE = "url(https://visualpharm.com/assets/578/Question-595b40b85ba036ed117da8d4.svg)";
+
+
 let currentFocusedElement;
 let highballuosContainer;
 let highballuosBtn;
@@ -63,10 +69,13 @@ const appendNew = (target) => {
     highballuosBtn = document.createElement("div");
     highballuosBtn.className = "highballuos-btn";
     highballuosBtn.onclick = onClickHighballousBtn;
+    highballuosBtn.style.backgroundImage = NORMAL_IMAGE;
 
     highballuosContainer.appendChild(highballuosBtn);
 
     target.parentElement.appendChild(highballuosContainer);
+
+    detectHateSpeech(target);
 }
 
 // remove events and elements when target changed
@@ -128,6 +137,8 @@ const onTextChange = (event) => {
     if(highballuosTimer){
         clearTimeout(highballuosTimer);
     }
+
+    highballuosBtn.style.backgroundImage = LOADING_IMAGE;
     highballuosTimer = setTimeout(detectHateSpeech, 700, event.target);
 }
 
@@ -139,6 +150,8 @@ const detectHateSpeech = (target) => {
     } else {
         txt = target.value;
     }
+
+    if(txt == "") return;
 
     let postBody = {
         instances: [
@@ -155,8 +168,32 @@ const detectHateSpeech = (target) => {
         headers : {"content-type" : "application/json"}
     })
     .then(res => res.json())
-    .then(resJson => console.log(resJson.predictions))
+    .then(resJson => resJson && resJson.predictions && resJson.predictions[0] && resJson.predictions[0].output_2)
+    .then(output => {getTextStatus(output)})
     .catch(err => console.log(err));
+}
+
+// getText's Style and Change highballuosBtn's Image depends on Its Style
+const getTextStyle = (output) => {
+    if(output === undefined) return;
+
+    if(output[0] > output[1]){
+        if(output[0] > output[2]){
+            highballuosBtn.style.backgroundImage = NORMAL_IMAGE;
+            console.log("normal");
+        } else {
+            highballuosBtn.style.backgroundImage = HATE_IMAGE;
+            console.log("hate");
+        }
+    } else {
+        if(output[1] > output[2]){
+            highballuosBtn.style.backgroundImage = OFFENSIVE_IMAGE;
+            console.log("offensive");
+        } else {
+            highballuosBtn.style.backgroundImage = HATE_IMAGE;
+            console.log("hate");
+        }
+    }
 }
 
 
