@@ -26,15 +26,18 @@ let highballuosTimer;
 let highballuosText
 
 const eventTypes = ["input"];
+const eventOptions = {
+    capture : false,
+    once : false,
+    passive : true
+};
 
 
 // window load unload event listeners -> use to catch focusing event
 window.onload = () => {
-    document.body.addEventListener("focusin", onFocusIn, {
-        capture : false,
-        once : false,
-        passive : true
-    });
+    document.body.addEventListener("focusin", onFocusIn, eventOptions);
+
+    window.addEventListener("resize", onResize, eventOptions);
 };
 
 window.onunload = () => {
@@ -42,6 +45,15 @@ window.onunload = () => {
         eventListenerHelper(currentFocusedElement, eventTypes, onTextChange, false);
     }
     document.body.removeEventListener("focusin", onFocusIn);
+}
+
+// onresize event function
+// if window resized, copy layout of textarea to highballuos container
+const onResize = (event) => {
+    event.stopPropagation();
+    if(currentFocusedElement && highballuosContainer){
+        copyLayout(currentFocusedElement, highballuosContainer);
+    }
 }
 
 // focusin event function
@@ -118,11 +130,7 @@ const eventListenerHelper = (target, events, handler, isAdd = true) => {
 
     if(isAdd){
         for(let i=0; i<events.length; i++){
-            target.addEventListener(events[i], handler, {
-                capture : false,
-                once : false,
-                passive : true
-            });
+            target.addEventListener(events[i], handler, eventOptions);
         }
     } else {
         for(let i=0; i<events.length; i++){
