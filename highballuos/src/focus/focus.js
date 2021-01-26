@@ -101,7 +101,9 @@ const removePrev = (target) => {
 const isTextElement = (element) => {
     switch(element.tagName) {
         case TEXTAREA_TAG :
-            element.rows
+            if(element.rows == "1"){
+                return false;
+            }
             return true;
 
         case DIV_TAG :
