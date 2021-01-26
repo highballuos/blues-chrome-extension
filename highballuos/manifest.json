@@ -11,12 +11,9 @@
     "content_scripts": [
       {
         "matches"  : ["https://*/*"],
-        "js" : ["src/injection/contentscript.js"],
-        "css" : ["src/injection/focus.css"]
+        "js" : ["src/focus/focus.js"],
+        "css" : ["src/focus/focus.css"]
       }
-    ],
-    "web_accessible_resources": [
-      "src/injection/focus.js"
     ],
     "page_action": {
       "default_popup": "src/popup/popup.html",

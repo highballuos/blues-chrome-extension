@@ -11,7 +11,8 @@ Page가 load 될 때 이벤트를 등록하고 unload 될 때 이벤트를 제�
 
 const TEXTAREA_TAG = "TEXTAREA";
 const DIV_TAG = "DIV";
-const HATE_SPEECH_DETECT_API = "https://main-multilingual-bert-korean-hate-speech-jeongukjae.endpoint.ainize.ai/v1/models/model:predict";
+const HATE_SPEECH_DETECT_API_ORIGIN = "https://main-multilingual-bert-korean-hate-speech-jeongukjae.endpoint.ainize.ai";
+const HATE_SPEECH_DETECT_API_PATH = "/v1/models/model:predict";
 
 const NORMAL_IMAGE = "url(https://visualpharm.com/assets/838/Cool-595b40b65ba036ed117d3e78.svg)";
 const OFFENSIVE_IMAGE = "url(https://visualpharm.com/assets/134/Angry-595b40b65ba036ed117d3b6c.svg)";
@@ -100,6 +101,7 @@ const removePrev = (target) => {
 const isTextElement = (element) => {
     switch(element.tagName) {
         case TEXTAREA_TAG :
+            element.rows
             return true;
 
         case DIV_TAG :
@@ -170,14 +172,18 @@ const detectHateSpeech = (target) => {
         ]
     }
 
-    fetch(HATE_SPEECH_DETECT_API, {
+    let headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Accept", "application/json");
+
+    fetch(HATE_SPEECH_DETECT_API_ORIGIN+HATE_SPEECH_DETECT_API_PATH, {
         method : "POST",
         body : JSON.stringify(postBody),
-        headers : {"content-type" : "application/json"}
+        headers : headers
     })
-    .then(res => res.json())
+    .then(res => res.ok && res.json())
     .then(resJson => resJson && resJson.predictions && resJson.predictions[0] && resJson.predictions[0].output_2)
-    .then(output => {getTextStatus(output)})
+    .then(output => {getTextStyle(output)})
     .catch(err => console.log(err));
 }
 
@@ -203,12 +209,6 @@ const getTextStyle = (output) => {
         }
     }
 }
-
-
-/*
-TODO: 매번 나눌 것인가? 아니면 한번에 나눠서 다른 함수를 호출할 것인가 정하자
-*/
-
 
 // onclick func of highballuosBtn
 // return transfered text to currentFocusedElement's value
