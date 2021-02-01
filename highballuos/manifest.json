@@ -11,8 +11,15 @@
     "content_scripts": [
       {
         "matches"  : ["https://*/*"],
-        "js" : ["src/focus/focus.js"],
-        "css" : ["src/focus/focus.css"]
+        "js" : [
+          "src/js/util/constants.js",
+          "src/js/util/event.js",
+          "src/js/blues/BluesView.js",
+          "src/js/blues/BluesModel.js",
+          "src/js/blues/BluesPresenter.js",
+          "src/js/index.js"
+        ],
+        "css" : ["src/css/focus.css"]
       }
     ],
     "page_action": {
