@@ -20,13 +20,9 @@ const eventListenerHelper = (target, events, handler, isAdd = true) => {
         }
     } else {
         if(isAdd){
-            for(let i=0; i<events.length; i++){
-                target.addEventListener(events, handler, eventOptions);
-            }
+            target.addEventListener(events, handler, eventOptions);
         } else {
-            for(let i=0; i<events.length; i++){
-                target.removeEventListener(events, handler);
-            }
+            target.removeEventListener(events, handler);
         }
     }
 
