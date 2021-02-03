@@ -7,7 +7,7 @@ const BluesModel = (function(){
             return instance;
         }
         this._text = "";
-        this._styledText = "대체 텍스트";
+        this._styledText = "";
         this._status = 0;
 
         instance = this;
@@ -19,6 +19,12 @@ const BluesModel = (function(){
         },
         getText : function(){
             return this._text;
+        },
+        setStyledText : function(txt){
+            this._styledText = txt;
+        },
+        getStyledText : function(){
+            return this._styledText;
         },
         setStatus : function(status){
             this._status = status;

@@ -7,33 +7,27 @@ const BluesView = (function(){
             return instance;
         }
         this._target = null;
-        this._container = _createContainer();
+        this._container = _createElement("blues_container", "blues-container");
 
-        this._btn = _createBtn();
-        this._container.appendChild(this._btn);
+        this._textarea = _createElement("div", "blues-textarea");
+        this._btn = _createElement("div", "blues-btn");
+        this._textarea.appendChild(this._btn);
+        this._container.appendChild(this._textarea);
+
+        this._hideContainer = _createElement("blues_hide_container", "blues-hide-container");
+        this._hideTextbox = _createElement("div", "blues-hide-textbox");
+        this._hideContainer.appendChild(this._hideTextbox);
+        this._container.appendChild(this._hideContainer);
+
+        this.setStyledText();
         
         instance = this;
     }
 
-    const _createContainer = () => {
-        const container = document.createElement("blues_container");
-        container.className = "highballuos-container";
-        return container;
-    }
-
-    const _createBtn = () => {
-        const btn = document.createElement("button");
-        btn.className = "highballuos-btn";
-        return btn;
-    }
-
-    const _copyLayout = (origin, target) => {
-        const layout = origin.getBoundingClientRect();
-        
-        target.style.width = layout.width + "px";
-        target.style.height = layout.height + "px";
-        target.style.left = window.pageXOffset + layout.left + "px";
-        target.style.top = window.pageYOffset + layout.top + "px";
+    function _createElement(tagName, className){
+        const element = document.createElement(tagName);
+        element.className = className;
+        return element;
     }
 
     BluesView.prototype = {
@@ -55,7 +49,15 @@ const BluesView = (function(){
         },
         setTarget : function(target){
             this._target = target;
-            _copyLayout(this._target, this._container);
+            this.changePos();
+        },
+        changePos : function(){
+            const layout = this._target.getBoundingClientRect();
+
+            this._textarea.style.width = layout.width + "px";
+            this._textarea.style.height = layout.height + "px";
+            this._container.style.left = window.pageXOffset + layout.left + "px";
+            this._container.style.top = window.pageYOffset + layout.top + "px";
         },
         getTargetView : function(){
             return this._target;
@@ -70,9 +72,9 @@ const BluesView = (function(){
         },
         getText : function(){
             if(this._target.tagName == DIV_TAG){
-                txt = this._target.innerText;
+                return this._target.innerText;
             } else {
-                txt = this._target.value;
+                return this._target.value;
             }
         },
         setText : function(txt){
@@ -87,7 +89,7 @@ const BluesView = (function(){
         getContainer : function() {
             return this._container;
         },
-        
+   
         // Button View Method
         getBtn : function() {
             return this._btn;
@@ -112,6 +114,19 @@ const BluesView = (function(){
             } else {
                 console.log("removeBtnHandler fail : button not exist");
             }
+        },
+
+        // Hide Styled Text View
+        setStyledText : function(txt){
+            if(txt && txt != ""){
+                this._hideTextbox.innerText = txt;
+            } else {
+                this._hideTextbox.innerText = "대체할 텍스트가 없습니다.";
+            }
+        },
+
+        setStyledTextDisplay : function(isDisplay){
+            this._hideContainer.style.display = isDisplay ? "block" : "none";
         }
     }
     return BluesView;
