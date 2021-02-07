@@ -1,21 +1,61 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 'use strict';
 
-let changeColor = document.getElementById('changeColor');
+let showBlues = document.getElementById('show-blues');
+let bluesButton = document.getElementById("blues-button");
+let isBluesOn = "true";
 
-chrome.storage.sync.get('color', function(data) {
-  changeColor.style.backgroundColor = data.color;
-  changeColor.setAttribute('value', data.color);
+chrome.storage.sync.get('isBluesOn', function(data) {
+
+  isBluesOn = data.isBluesOn ? data.isBluesOn : "false";
+  if(isBluesOn == "true"){
+    turnON();
+  } else {
+    turnOFF();
+  }
 });
 
-changeColor.onclick = function(element) {
-  let color = element.target.value;
+bluesButton.onclick = function(){
+  notify2script(toggleStrBool(isBluesOn));
+}
+
+function toggleStrBool(strBool){
+  return strBool == "true" ? "false" : "true";
+}
+
+function turnON(){
+  showBlues.innerText = "Blues is Working!";
+  bluesButton.innerText = "ON";
+  bluesButton.style.backgroundColor = "blue";
+  bluesButton.style.color = "white";
+  isBluesOn = "true";
+}
+
+function turnOFF(){
+  showBlues.innerText = "Blues is not Working..";
+  bluesButton.innerText = "OFF";
+  bluesButton.style.backgroundColor = "#aaaaaa";
+  bluesButton.style.color = "red";
+  isBluesOn = "false";
+}
+
+function notify2script(currentStatus){
+
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.executeScript(
-        tabs[0].id,
-        {code: 'document.body.style.backgroundColor = "' + color + '";'});
+
+    chrome.tabs.sendMessage(tabs[0].id, {isBluesOn: currentStatus}, function(response) {
+    
+      if(response && response.accepted){
+        chrome.storage.sync.set({isBluesOn : currentStatus}, function() {
+          if(currentStatus == "true"){
+            turnON();
+          } else {
+            turnOFF();
+          }
+        })
+      } else {
+        alert("message send fail. please check apps status");
+      }
+    });
   });
-};
+  
+}

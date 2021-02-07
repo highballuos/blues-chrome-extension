@@ -9,6 +9,7 @@ const BluesPresenter = (function(){
         this._model = new BluesModel();
         this._view = new BluesView();
         this._timer = null;
+        this._isTurnON = true;
 
         _addMouseEventOnBtn.bind(this)();
         
@@ -131,6 +132,12 @@ const BluesPresenter = (function(){
                 this._view.removeTargetHandler("input", _onTextChange);
             }
             this._view.remove();
+        },
+        getIsTurnON : function(){
+            return this._isTurnON;
+        },
+        setIsTurnON : function(isTurnON){
+            this._isTurnON = isTurnON;
         }
     }
     
