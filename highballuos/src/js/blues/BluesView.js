@@ -36,7 +36,9 @@ const BluesView = (function(){
             document.documentElement.appendChild(this._container);
         },
         remove : function(){
-            document.documentElement.removeChild(this._container);
+            if(this._container){
+                document.documentElement.removeChild(this._container);
+            }
             this._target = null;
         },
 
