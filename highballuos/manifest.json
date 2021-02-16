@@ -4,10 +4,6 @@
     "description": "Get Input's value When focus change!",
     "permissions": ["activeTab", "declarativeContent", "storage"],
     "options_page": "src/option/options.html",
-    "background": {
-      "scripts": ["src/background/bgd.js"],
-      "persistent": false
-    },
     "content_scripts": [
       {
         "matches"  : ["https://*/*"],
