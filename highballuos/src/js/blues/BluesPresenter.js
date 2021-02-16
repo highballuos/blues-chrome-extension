@@ -124,6 +124,7 @@ const BluesPresenter = (function(){
             eventListenerHelper(document.body, "focusin", _onFocusIn.bind(this), true);
             eventListenerHelper(window, "resize", _onResize.bind(this), true);
             this._view.addBtnHandler("click", _onClickBtn.bind(this));
+            this._isTurnON = true;
         },
         off : function(){
             eventListenerHelper(document.body, "focusin", _onFocusIn.bind(this), false);
@@ -132,12 +133,10 @@ const BluesPresenter = (function(){
                 this._view.removeTargetHandler("input", _onTextChange);
             }
             this._view.remove();
+            this._isTurnON = false;
         },
         getIsTurnON : function(){
             return this._isTurnON;
-        },
-        setIsTurnON : function(isTurnON){
-            this._isTurnON = isTurnON;
         }
     }
     

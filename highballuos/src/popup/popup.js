@@ -1,61 +1,62 @@
 'use strict';
 
-let showBlues = document.getElementById('show-blues');
-let bluesButton = document.getElementById("blues-button");
-let isBluesOn = "true";
+let _showBlues = document.getElementById('show-blues');
+let _bluesButton = document.getElementById("blues-button");
+let _isBluesOn = "true";
 
-chrome.storage.sync.get('isBluesOn', function(data) {
+init();
+_bluesButton.onclick = onClickBlues;
 
-  isBluesOn = data.isBluesOn ? data.isBluesOn : "false";
-  if(isBluesOn == "true"){
-    turnON();
-  } else {
-    turnOFF();
-  }
-});
-
-bluesButton.onclick = function(){
-  notify2script(toggleStrBool(isBluesOn));
+function init(){
+  chrome.storage.sync.get('isBluesOn', function(data) {
+    _isBluesOn = !data.isBluesOn ? "true" : data.isBluesOn;
+    
+    if(_isBluesOn == "true"){
+      turnON();
+    } else {
+      turnOFF();
+    }
+  });
 }
 
-function toggleStrBool(strBool){
-  return strBool == "true" ? "false" : "true";
+function onClickBlues() {
+  // change status
+  notify2script(_isBluesOn == "true" ? "false" : "true");
 }
 
 function turnON(){
-  showBlues.innerText = "Blues is Working!";
-  bluesButton.innerText = "ON";
-  bluesButton.style.backgroundColor = "blue";
-  bluesButton.style.color = "white";
-  isBluesOn = "true";
+  _showBlues.innerText = "Blues is Working!";
+  _bluesButton.innerText = "ON";
+  _bluesButton.style.backgroundColor = "blue";
+  _bluesButton.style.color = "white";
+  _isBluesOn = "true";
 }
 
 function turnOFF(){
-  showBlues.innerText = "Blues is not Working..";
-  bluesButton.innerText = "OFF";
-  bluesButton.style.backgroundColor = "#aaaaaa";
-  bluesButton.style.color = "red";
-  isBluesOn = "false";
+  _showBlues.innerText = "Blues is not Working..";
+  _bluesButton.innerText = "OFF";
+  _bluesButton.style.backgroundColor = "#aaaaaa";
+  _bluesButton.style.color = "red";
+  _isBluesOn = "false";
 }
 
-function notify2script(currentStatus){
-
+function notify2script(changedStatus){
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-
-    chrome.tabs.sendMessage(tabs[0].id, {isBluesOn: currentStatus}, function(response) {
-    
-      if(response && response.accepted){
-        chrome.storage.sync.set({isBluesOn : currentStatus}, function() {
-          if(currentStatus == "true"){
-            turnON();
-          } else {
-            turnOFF();
-          }
-        })
+    chrome.storage.sync.set({isBluesOn : changedStatus}, function() {
+      if(changedStatus == "true"){
+        turnON();
       } else {
-        alert("message send fail. please check apps status");
+        turnOFF();
       }
-    });
+      sendChangedStatus(tabs, changedStatus);
+    })
+    
   });
   
+}
+
+function sendChangedStatus(tabs, changedStatus){
+  chrome.tabs.sendMessage(tabs[0].id, {isBluesOn: changedStatus}, function(response) {
+    console.log(response);
+  });
 }
