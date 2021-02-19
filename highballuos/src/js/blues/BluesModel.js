@@ -9,6 +9,7 @@ const BluesModel = (function(){
         this._text = "";
         this._styledText = "";
         this._status = 0;
+        this._isTurnOn = false;
 
         instance = this;
     }
@@ -32,9 +33,15 @@ const BluesModel = (function(){
         getStatus : function(){
             return this._status;
         },
+        setIsTurnOn : function(isTurnOn){
+            this._isTurnOn = isTurnOn;
+        },
+        getIsTurnOn : function(){
+            return this._isTurnOn;
+        },
         clear : function(){
             this._text = "";
-            this._styledText = "대체 텍스트";
+            this._styledText = "";
             this._status = 0;
         }
     }

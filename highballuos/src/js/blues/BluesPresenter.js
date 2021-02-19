@@ -9,49 +9,71 @@ const BluesPresenter = (function(){
         this._model = new BluesModel();
         this._view = new BluesView();
         this._timer = null;
-        this._isTurnON = true;
 
         _addMouseEventOnBtn.bind(this)();
         
         instance = this;
     }
 
+    // Button
+    function _onClickBtn(){
+        if(this._model.getStatus() != BTN_MODE.HATE_MODE) return;
+        this._model.setText(this._model.getStyledText());
+        this._view.setText(this._model.getText());
 
-    function _detectHateSpeech(){
-        // const text = this._model.getText();
-        if(Math.random() >= 0.5){
-            this._model.setStatus(BTN_MODE.HATE_MODE);
-            this._view.setBtnMode(this._model.getStatus());
-            _stylingText.bind(this)();
-        } else {
-            this._model.setStatus(BTN_MODE.NORMAL_MODE);
-            this._view.setBtnMode(this._model.getStatus());
-        }
-    }
-
-    function _stylingText(){
-        this._model.setStyledText(this._model.getText().split("").reverse().join(""));
-        this._view.setStyledText(this._model.getStyledText());
-    }
-
-    function _onTextChange(){
-        if(this._timer){
-            clearTimeout(this._timer);
-        }
-        const text = this._view.getText();
         this._model.setStyledText("");
-        this._view.setStyledText(this._model.getStyledText());
-        if(text == ""){
-            return;
-        }
+        this._model.setStatus(BTN_MODE.NORMAL_MODE);
+        this._view.setBtnMode(this._model.getStatus());
+        this._view.setStyledTextDisplay(false);
+    }
+
+    function _addMouseEventOnBtn(){
+        this._view.addBtnHandler("mouseover", function(){
+            if(this._model.getStatus() == BTN_MODE.HATE_MODE)
+                this._view.setStyledTextDisplay(true);
+        }.bind(this));
+
+        this._view.addBtnHandler("mouseout", function(){
+            this._view.setStyledTextDisplay(false);
+        }.bind(this));
+    }
+
+
+    // TextArea
+    function _onTextChange(){
+
+        if(this._timer) clearTimeout(this._timer);
+
+        const text = this._view.getText();
+        this._view.setStyledTextDisplay(false);
+
+        if(text == "") return;
 
         this._view.setBtnMode(BTN_MODE.LOADING_MODE);
         this._model.setText(text);
         // debouncing 1000ms
         this._timer = setTimeout(_detectHateSpeech.bind(this), 1000);
     }
+    
+    function _stylingText(){
+        this._model.setStyledText(this._model.getText().split("").reverse().join(""));
+        this._view.setStyledText(this._model.getStyledText());
+    }
 
-    // our target is only type of [div, input, textarea]
+    function _detectHateSpeech(){
+        // const text = this._model.getText();
+        if(Math.random() >= 0.5){
+            _stylingText.bind(this)();
+            this._model.setStatus(BTN_MODE.HATE_MODE);
+            this._view.setBtnMode(this._model.getStatus());
+        } else {
+            this._model.setStatus(BTN_MODE.NORMAL_MODE);
+            this._view.setBtnMode(this._model.getStatus());
+        }
+    }
+
+    
+    // Container Code
     function _isTextElement(element){
         switch(element.tagName) {
             case TEXTAREA_TAG :
@@ -65,7 +87,6 @@ const BluesPresenter = (function(){
                 return false;
         }
     }
-
 
     function _onFocusIn(event){
         event.stopPropagation();
@@ -90,26 +111,6 @@ const BluesPresenter = (function(){
         }
     }
 
-    function _onClickBtn(){
-        this._model.setText(this._model.getStyledText());
-        this._view.setText(this._model.getText());
-
-        this._model.setStyledText("");
-        this._model.setStatus(BTN_MODE.NORMAL_MODE);
-        this._view.setBtnMode(this._model.getStatus());
-        this._view.setStyledTextDisplay(false);
-    }
-
-    function _addMouseEventOnBtn(){
-        this._view.addBtnHandler("mouseover", function(){
-            if(this._model.getStatus() == BTN_MODE.HATE_MODE)
-                this._view.setStyledTextDisplay(true);
-        }.bind(this));
-        this._view.addBtnHandler("mouseout", function(){
-            this._view.setStyledTextDisplay(false);
-        }.bind(this));
-    }
-
 
     BluesPresenter.prototype = {
         getView : function(){
@@ -119,24 +120,25 @@ const BluesPresenter = (function(){
             return this._view.getTargetView();
         },
         on : function(){
+            if(this._model.getIsTurnOn()) return;
+
+            this._model.setIsTurnOn(true);
             this._view.display();
             _addMouseEventOnBtn.bind(this)();
             eventListenerHelper(document.body, "focusin", _onFocusIn.bind(this), true);
             eventListenerHelper(window, "resize", _onResize.bind(this), true);
             this._view.addBtnHandler("click", _onClickBtn.bind(this));
-            this._isTurnON = true;
         },
         off : function(){
+            if(!this._model.getIsTurnOn()) return;
+
+            this._model.setIsTurnOn(false);
             eventListenerHelper(document.body, "focusin", _onFocusIn.bind(this), false);
             eventListenerHelper(window, "resize", _onResize.bind(this), false);
             if(this._view.hasTarget()){
                 this._view.removeTargetHandler("input", _onTextChange);
             }
             this._view.remove();
-            this._isTurnON = false;
-        },
-        getIsTurnON : function(){
-            return this._isTurnON;
         }
     }
     

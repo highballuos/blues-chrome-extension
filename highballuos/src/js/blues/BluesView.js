@@ -39,7 +39,6 @@ const BluesView = (function(){
             if(this._container){
                 document.documentElement.removeChild(this._container);
             }
-            this._target = null;
         },
 
         // Target Text Input View Method
