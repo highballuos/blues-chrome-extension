@@ -110,19 +110,16 @@ const BluesView = (function(){
             switch(mode) {
                 case BTN_MODE.LOADING_MODE :
                     this._anim.loop = true;
-                    this._anim.setDirection(1);
                     this._anim.play();
                     this._btn.style.filter = FILTER_NONE;
                     break;
                 case BTN_MODE.NORMAL_MODE :
                     this._anim.loop = false;
-                    this._anim.setDirection(-1);
-                    this._anim.play();
+                    this._anim.stop();
                     this._btn.style.filter = FILTER_GRAY;
                     break;
                 case BTN_MODE.HATE_MODE :
                     this._anim.loop = false;
-                    this._anim.setDirection(1);
                     this._anim.play();
                     this._btn.style.filter = FILTER_NONE;
                     break;
