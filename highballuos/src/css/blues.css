@@ -1,0 +1,49 @@
+.blues-container{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 999;
+    pointer-events: none;
+}
+
+.blues-textarea{
+    pointer-events: none;
+    position: relative;
+}
+
+.blues-btn{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 0px;
+    bottom: 0px;
+    border-radius: 50%;
+    z-index: 9999;
+    pointer-events: all;
+}
+.blues-btn:hover{
+    cursor: pointer;
+}
+
+.blues-hide-container{
+    display: none;
+    width: 300px;
+    height: auto;
+    margin-top: 10px;
+    padding: 10px;
+    background: linear-gradient(180deg,#f9faff 4.73%,#f0f2fc 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgb(77 83 110 / 40%);
+    box-sizing: initial;
+}
+
+.blues-hide-textbox{
+    width: 280px;
+    height: auto;
+    color: rgb(14, 16, 26);
+    font-size: 10pt;
+    font-weight: 400;
+    letter-spacing: calc(0px * var(--rem));
+    line-height: calc(1.3125px * var(--rem));
+}

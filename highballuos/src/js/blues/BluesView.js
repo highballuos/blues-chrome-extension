@@ -11,6 +11,7 @@ const BluesView = (function(){
 
         this._textarea = _createElement("div", "blues-textarea");
         this._btn = _createElement("div", "blues-btn");
+        
         this._textarea.appendChild(this._btn);
         this._container.appendChild(this._textarea);
 
@@ -20,6 +21,16 @@ const BluesView = (function(){
         this._container.appendChild(this._hideContainer);
 
         this.setStyledText();
+
+        // set Lottie options
+        this._anim = lottie.loadAnimation({
+            container: this._btn,
+            renderer: 'svg',
+            loop: false,
+            autoplay: false,
+            path: ECO_BULB_URL
+        });
+        this._btn.style.filter = FILTER_GRAY;
         
         instance = this;
     }
@@ -95,11 +106,28 @@ const BluesView = (function(){
         getBtn : function() {
             return this._btn;
         },
-        setBtnMode : function(mode){
-            if(this._btn){
-                this._btn.style.backgroundImage = BTN_IMAGES[mode];
-            } else {
-                console.log("button not exist");
+        setBtnStatus : function(mode){
+            switch(mode) {
+                case BTN_MODE.LOADING_MODE :
+                    this._anim.loop = true;
+                    this._anim.setDirection(1);
+                    this._anim.play();
+                    this._btn.style.filter = FILTER_NONE;
+                    break;
+                case BTN_MODE.NORMAL_MODE :
+                    this._anim.loop = false;
+                    this._anim.setDirection(-1);
+                    this._anim.play();
+                    this._btn.style.filter = FILTER_GRAY;
+                    break;
+                case BTN_MODE.HATE_MODE :
+                    this._anim.loop = false;
+                    this._anim.setDirection(1);
+                    this._anim.play();
+                    this._btn.style.filter = FILTER_NONE;
+                    break;
+                default :
+                    console.log("Undefined Btn Status");
             }
         },
         addBtnHandler : function(eventType, handler){

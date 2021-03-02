@@ -13,3 +13,8 @@ const BTN_MODE = {
     HATE_MODE : 2,
     LOADING_MODE : 3
 }
+
+const ECO_BULB_URL = chrome.runtime.getURL("images/eco_bulb.json");
+
+const FILTER_GRAY = "grayscale(80%)";
+const FILTER_NONE = "none";

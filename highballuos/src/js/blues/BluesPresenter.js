@@ -10,7 +10,7 @@ const BluesPresenter = (function(){
         this._view = new BluesView();
         this._timer = null;
 
-        _addMouseEventOnBtn.bind(this)();
+        _addEventsOfBluesBtn.bind(this)();
         
         instance = this;
     }
@@ -38,7 +38,7 @@ const BluesPresenter = (function(){
 
         this._model.setStyledText("");
         this._model.setStatus(BTN_MODE.NORMAL_MODE);
-        this._view.setBtnMode(this._model.getStatus());
+        this._view.setBtnStatus(this._model.getStatus());
         this._view.setStyledTextDisplay(false);
     }
 
@@ -64,9 +64,12 @@ const BluesPresenter = (function(){
         const text = this._view.getText();
         this._view.setStyledTextDisplay(false);
 
-        if(text == "") return;
+        if(text == "") {
+            this._view.setBtnStatus(BTN_MODE.NORMAL_MODE);
+            return;
+        }
 
-        this._view.setBtnMode(BTN_MODE.LOADING_MODE);
+        this._view.setBtnStatus(BTN_MODE.LOADING_MODE);
         this._model.setText(text);
         this._timer = setTimeout(_detectHateSpeech.bind(this), 1000); // debouncing 1000ms
     }
@@ -83,10 +86,10 @@ const BluesPresenter = (function(){
         if(Math.random() >= 0.5){
             _stylingText.bind(this)();
             this._model.setStatus(BTN_MODE.HATE_MODE);
-            this._view.setBtnMode(this._model.getStatus());
+            this._view.setBtnStatus(this._model.getStatus());
         } else {
             this._model.setStatus(BTN_MODE.NORMAL_MODE);
-            this._view.setBtnMode(this._model.getStatus());
+            this._view.setBtnStatus(this._model.getStatus());
         }
     }
 
@@ -130,7 +133,7 @@ const BluesPresenter = (function(){
             this._view.removeTargetHandler("input", _onTextChange);
             
             this._view.setTarget(event.path[0]);
-            this._view.setBtnMode(BTN_MODE.NORMAL_MODE);
+            this._view.setBtnStatus(BTN_MODE.NORMAL_MODE);
             this._view.addTargetHandler("input", _onTextChange.bind(this));
             const text = this._view.getText();
             this._model.setText(text ? text : "");
