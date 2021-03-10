@@ -3,14 +3,14 @@
 let _showBlues = document.getElementById("show-blues");
 let _bluesButton = document.getElementById("blues-button");
 let _isBluesOn = "true";
-const eco_bulb_url = chrome.runtime.getURL("images/eco_bulb.json");
+const ECO_BULB_URL = chrome.runtime.getURL("images/eco_bulb.json");
 
 let animation = lottie.loadAnimation({
   container: _bluesButton,
   renderer: 'svg',
   loop: false,
   autoplay: false,
-  path: eco_bulb_url // the path to the animation json
+  path: ECO_BULB_URL // the path to the animation json
 });
 
 init();

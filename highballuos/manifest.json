@@ -9,6 +9,7 @@
         "matches"  : ["https://*/*"],
         "js" : [
           "src/lib/lottie.min.js",
+          "src/lib/tf.min.js",
           "src/js/util/constants.js",
           "src/js/util/event.js",
           "src/js/blues/BluesView.js",
@@ -19,17 +20,20 @@
         "css" : ["src/css/blues.css"]
       }
     ],
-    "web_accessible_resources": ["images/eco_bulb.json"],
+    "web_accessible_resources": [
+      "assets/images/eco_bulb.json",
+      "assets/models/detect/model.json"
+    ],
     "browser_action": {
       "default_popup": "src/popup/popup.html",
       "default_icon": {
-        "32": "images/eco_bulb_on32.png",
-        "128": "images/eco_bulb_on32.png"
+        "32": "assets/images/eco_bulb_on32.png",
+        "128": "assets/images/eco_bulb_on32.png"
       }
     },
     "icons": {
-      "32": "images/eco_bulb_on32.png",
-      "128": "images/eco_bulb_on32.png"
+      "32": "assets/images/eco_bulb_on32.png",
+      "128": "assets/images/eco_bulb_on32.png"
     },
     "manifest_version": 2
   }
