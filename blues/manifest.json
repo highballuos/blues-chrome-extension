@@ -2,14 +2,20 @@
     "name": "highballuos",
     "version": "1.0",
     "description": "Get Input's value When focus change!",
-    "permissions": ["activeTab", "declarativeContent", "storage"],
-    "options_page": "src/option/options.html",
+    "permissions": [
+      "activeTab",
+      "declarativeContent",
+      "webRequest",
+      "webRequestBlocking",
+      "<all_urls>",
+      "storage",
+      "tabs"
+    ],
     "content_scripts": [
       {
         "matches"  : ["https://*/*"],
         "js" : [
           "src/lib/lottie.min.js",
-          "src/lib/tf.min.js",
           "src/js/util/constants.js",
           "src/js/util/event.js",
           "src/js/blues/BluesView.js",
@@ -20,20 +26,25 @@
         "css" : ["src/css/blues.css"]
       }
     ],
+    "background": {
+      "scripts": [
+        "src/background/background.js"
+      ],
+      "persistent": true
+    },
     "web_accessible_resources": [
-      "assets/images/eco_bulb.json",
-      "assets/models/detect/model.json"
+      "images/eco_bulb.json"
     ],
     "browser_action": {
       "default_popup": "src/popup/popup.html",
       "default_icon": {
-        "32": "assets/images/eco_bulb_on32.png",
-        "128": "assets/images/eco_bulb_on32.png"
+        "32": "images/eco_bulb_on32.png",
+        "128": "images/eco_bulb_on32.png"
       }
     },
     "icons": {
-      "32": "assets/images/eco_bulb_on32.png",
-      "128": "assets/images/eco_bulb_on32.png"
+      "32": "images/eco_bulb_on32.png",
+      "128": "images/eco_bulb_on32.png"
     },
     "manifest_version": 2
   }
