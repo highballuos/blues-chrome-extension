@@ -155,12 +155,6 @@ const BluesPresenter = (function(){
 
 
     BluesPresenter.prototype = {
-        getView : function(){
-            return this._view;
-        },
-        getTargetView : function(){
-            return this._view.getTargetView();
-        },
         on : function(){
             if(this._model.getIsTurnOn()) return;
 
