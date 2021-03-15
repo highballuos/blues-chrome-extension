@@ -82,17 +82,22 @@ const BluesPresenter = (function(){
 
     // not completed need tensorflow js model of detect hate speech
     function _detectHateSpeech(){
-        // const text = this._model.getText();
-        if(Math.random() >= 0.5){
-            _stylingText.bind(this)();
-            this._model.setStatus(BTN_MODE.HATE_MODE);
-            this._view.setBtnStatus(this._model.getStatus());
-        } else {
-            this._model.setStatus(BTN_MODE.NORMAL_MODE);
-            this._view.setBtnStatus(this._model.getStatus());
-        }
+        chrome.runtime.sendMessage({bluesTextVal: this._model.getText()}, response => {
+            if(response && response.isHate !== undefined){
+                if(response.isHate){
+                    _stylingText.bind(this)();
+                    this._model.setStatus(BTN_MODE.HATE_MODE);
+                    this._view.setBtnStatus(this._model.getStatus());
+                } else {
+                    this._model.setStatus(BTN_MODE.NORMAL_MODE);
+                    this._view.setBtnStatus(this._model.getStatus());
+                }
+            } else {        // if something wrong..
+                this._model.setStatus(BTN_MODE.NORMAL_MODE);
+                this._view.setBtnStatus(this._model.getStatus());
+            }
+        });
     }
-
     
     // --- Target & Container Code ---
 

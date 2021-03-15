@@ -19,15 +19,14 @@ const DetectTFModel = (function(){
         let model = await tf.loadGraphModel("./models/model.json");
         
         let inputText = "야 이 씨발놈아";
-        console.log(inputText);
         let inputTensor = inputText.split("\n").map(value => ([...value.split(" ")]));
-        console.log(inputTensor);
+        
         let inputLengths = inputTensor.map(t => t.length);
-        console.log(inputLengths);
+        
         let maxLength = Math.max(...inputLengths);
-        console.log(maxLength);
+        
         inputTensor = inputTensor.map(t => [...t, ...Array(maxLength - t.length).fill(0)]);
-        console.log(inputTensor);
+    
         inputTensor = tf.tensor2d(inputTensor, [inputTensor.length, maxLength], dtype = "int64");
         let output = await (model.predict(inputTensor).argMax(-1).array());
         console.log(output);
