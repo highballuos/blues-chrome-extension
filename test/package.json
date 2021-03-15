@@ -13,10 +13,6 @@
   "scripts": {
     "build": "webpack"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/highballuos/highballuos-chrome-extension.git"
-  },
   "keywords": [
     "chrome extension",
     "solution challenge",
@@ -24,9 +20,5 @@
     "hate speech"
   ],
   "author": "Enoch Kim <enochkim1220@gmail.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/highballuos/highballuos-chrome-extension/issues"
-  },
-  "homepage": "https://github.com/highballuos/highballuos-chrome-extension#readme"
+  "license": "ISC"
 }

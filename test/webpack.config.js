@@ -1,9 +1,9 @@
 const path = require('path');
 
 module.exports = {
-    entry: "./background/detect.js",
+    entry: "./test.js",
     output: {
-        filename: "test.js",
+        filename: "index.js",
         path: path.resolve(__dirname, "./"),
     }
 }
