@@ -18,3 +18,4 @@ const ECO_BULB_URL = chrome.runtime.getURL("images/eco_bulb.json");
 
 const FILTER_GRAY = "grayscale(80%)";
 const FILTER_NONE = "none";
+const DETECT_URL = "https://gsc.oasisfores.com/v1/models/model:predict";

@@ -18,14 +18,14 @@ const BluesPresenter = (function(){
     // --- Button Code ---
 
     function _addEventsOfBluesBtn() {
-        this._view.addBtnHandler("mouseover", _onMouseoverBtn.bind(this));
-        this._view.addBtnHandler("mouseout", _onMouseoutBtn.bind(this));
+        // this._view.addBtnHandler("mouseover", _onMouseoverBtn.bind(this));
+        // this._view.addBtnHandler("mouseout", _onMouseoutBtn.bind(this));
         this._view.addBtnHandler("click", _onClickBtn.bind(this));
     }
 
     function _removeEventsOfBluesBtn() {
-        this._view.removeBtnHandler("mouseover", _onMouseoverBtn);
-        this._view.removeBtnHandler("mouseout", _onMouseoutBtn);
+        // this._view.removeBtnHandler("mouseover", _onMouseoverBtn);
+        // this._view.removeBtnHandler("mouseout", _onMouseoutBtn);
         this._view.removeBtnHandler("click", _onClickBtn);
     }
 
@@ -42,18 +42,18 @@ const BluesPresenter = (function(){
         this._view.setStyledTextDisplay(false);
     }
 
-    // mouseover func of Blues Button
-    // if text's status == hate -> display styled text view
-    function _onMouseoverBtn() {
-        if(this._model.getStatus() == BTN_MODE.HATE_MODE)
-            this._view.setStyledTextDisplay(true);
-    }
+    // // mouseover func of Blues Button
+    // // if text's status == hate -> display styled text view
+    // function _onMouseoverBtn() {
+    //     if(this._model.getStatus() == BTN_MODE.HATE_MODE)
+    //         this._view.setStyledTextDisplay(true);
+    // }
 
-    // mouseout func of Blues Button
-    // hide styled text view
-    function _onMouseoutBtn() {
-        this._view.setStyledTextDisplay(false);
-    }
+    // // mouseout func of Blues Button
+    // // hide styled text view
+    // function _onMouseoutBtn() {
+    //     this._view.setStyledTextDisplay(false);
+    // }
 
     // --- Text Code ---
 
@@ -76,27 +76,52 @@ const BluesPresenter = (function(){
     
     // not completed need tensorflow js model of styling text
     function _stylingText(){
-        this._model.setStyledText(this._model.getText().split("").reverse().join(""));
+        this._model.setStyledText("더 좋은 말로 바꿔보는 것은 어떨까요??");
         this._view.setStyledText(this._model.getStyledText());
     }
 
     // not completed need tensorflow js model of detect hate speech
     function _detectHateSpeech(){
-        chrome.runtime.sendMessage({bluesTextVal: this._model.getText()}, response => {
-            if(response && response.isHate !== undefined){
-                if(response.isHate){
-                    _stylingText.bind(this)();
-                    this._model.setStatus(BTN_MODE.HATE_MODE);
-                    this._view.setBtnStatus(this._model.getStatus());
-                } else {
-                    this._model.setStatus(BTN_MODE.NORMAL_MODE);
-                    this._view.setBtnStatus(this._model.getStatus());
-                }
-            } else {        // if something wrong..
+        _requestDetect(this._model.getText())
+        .then(isHate => {
+            if(isHate){
+                _stylingText.bind(this)();
+                this._model.setStatus(BTN_MODE.HATE_MODE);
+                this._view.setBtnStatus(this._model.getStatus());
+                this._view.setStyledTextDisplay(true);
+            } else {
                 this._model.setStatus(BTN_MODE.NORMAL_MODE);
                 this._view.setBtnStatus(this._model.getStatus());
+                this._view.setStyledTextDisplay(false);
             }
         });
+    }
+
+
+    async function _requestDetect(text) {
+        
+        let postBody = {
+            instances: [
+                text
+            ]
+        };
+
+        try {
+            let res = await fetch( DETECT_URL, {
+                method : "POST",
+                body : JSON.stringify(postBody),
+                headers : {
+                    "content-type" : "application/json",
+                },
+                
+            });
+
+            res = await res.json();
+
+            return res.predictions[0][0] >= 0.5;
+        } catch (err){
+            console.log(err);
+        }
     }
     
     // --- Target & Container Code ---
