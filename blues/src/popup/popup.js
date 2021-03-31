@@ -34,14 +34,14 @@ function onClickBlues() {
 }
 
 function turnON(){
-  _showBlues.innerText = "Styling On";
+  _showBlues.innerText = "Detect On";
   animation.play();
   _bluesButton.style.filter = "none";
   _isBluesOn = "true";
 }
 
 function turnOFF(){
-  _showBlues.innerText = "Styling Off";
+  _showBlues.innerText = "Detect Off";
   animation.stop();
   _bluesButton.style.filter = "grayscale(80%)";
   _isBluesOn = "false";
