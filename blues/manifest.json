@@ -26,12 +26,6 @@
         "css" : ["src/css/blues.css"]
       }
     ],
-    "background": {
-      "scripts": [
-        "src/background/background.js"
-      ],
-      "persistent": true
-    },
     "web_accessible_resources": [
       "images/eco_bulb.json"
     ],
